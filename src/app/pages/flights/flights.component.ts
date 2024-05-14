@@ -49,15 +49,16 @@ export class FlightsComponent implements OnInit {
   selectedOrigin!: Airport;
   selectedDestination!: Airport;
   selectedBadge: string = '';
-  airportsInfo!: Airport[];
-  flightForm: FormGroup;
-  filteredOriginOptions!: Observable<Airport[]>;
-  filteredDestinationOptions!: Observable<Airport[]>;
-  filteredCurrencyOptions!: Observable<Currency[]>;
-  journey: DcxAirResponse = {};
-  loadingQuery: boolean = true;
-  mainCurrencies = currencies;
-  state!: State;
+  airportsInfo!: Airport[]; // Holds the airport information
+  flightForm: FormGroup; // Form group for flight form
+  filteredOriginOptions!: Observable<Airport[]>; // Observable for filtered origin airport options
+  filteredDestinationOptions!: Observable<Airport[]>; // Observable for filtered destination airport options
+  filteredCurrencyOptions!: Observable<Currency[]>; // Observable for filtered currency options
+  journey: DcxAirResponse = {}; // Holds the journey information
+  loadingQuery: boolean = true; // Flag to indicate if the query is loading
+  mainCurrencies = currencies; // Holds the main currencies
+  state!: State; // Holds the state information
+
   constructor(
     private fb: FormBuilder,
     private airportService: AirportInfoService,
@@ -65,35 +66,45 @@ export class FlightsComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private storeService: StoreService
   ) {
+    // Initialize the flight form with form controls and validators
     this.flightForm = this.fb.group({
-      origin: ['', Validators.required],
-      destination: ['', Validators.required],
-      currency: ['', Validators.required],
-      oneWay: ['', Validators.required],
+      origin: ['', Validators.required], // Origin airport control
+      destination: ['', Validators.required], // Destination airport control
+      currency: ['', Validators.required], // Currency control
+      oneWay: ['', Validators.required], // One-way control
     });
 
+    // Initialize the store service state
     this.storeService.setState({});
 
+    // Subscribe to the state changes from the store service
     this.storeService.getState().subscribe((state: State) => {
+      // If the DCX Air response data is available in the state, assign it to the 'journey' property
       if (state?.dcxAirResponse) {
-        this.journey = state?.dcxAirResponse;
+        this.journey = state.dcxAirResponse;
       }
     });
   }
 
   ngOnInit() {
+    // Initialize component data
     this.initData();
+    // Initialize filtered options for origin and destination airports
     this.filteredOriginOptions = this.initFiltersAirport('origin');
     this.filteredDestinationOptions = this.initFiltersAirport('destination');
+    // Initialize filtered options for currency
     this.filteredCurrencyOptions = this.initFiltersCurrency('currency');
   }
 
+  // Initializes filtered options for currency based on user input
   private initFiltersCurrency(formControlName: string): Observable<Currency[]> {
     return this.getFormControl(formControlName).valueChanges.pipe(
       startWith(''),
       map((value) => this._filterCurrency(value || '', true))
     );
   }
+
+  // Initializes filtered options for airports based on user input
   private initFiltersAirport(formControlName: string): Observable<Airport[]> {
     return this.getFormControl(formControlName).valueChanges.pipe(
       startWith(''),
@@ -137,7 +148,7 @@ export class FlightsComponent implements OnInit {
     });
   }
 
-  // Initializes component data
+  // Initializes component data by retrieving airport information
   private initData(): void {
     this.dcxairService.getCountries().subscribe({
       next: (res: any) => {
@@ -184,7 +195,7 @@ export class FlightsComponent implements OnInit {
           this.openSnackBar('' + err?.error?.message, 'Ok');
         },
         complete: () => {
-          // Optionally, perform actions after completing the request
+          
         },
       });
     } else {

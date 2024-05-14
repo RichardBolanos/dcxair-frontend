@@ -1,23 +1,74 @@
-<br class="mt-2">
+<br class="mt-2" />
 <mat-card class="flight-card mt-2">
   <mat-card-header>
-    <mat-card-title>{{ journey.origin }} - {{ journey.destination }}</mat-card-title>
-    <mat-card-subtitle>Total: {{ journey.price | currency}}</mat-card-subtitle>
+    <mat-card-title>
+      <b>{{ journey.origin }} - {{ journey.destination }}</b></mat-card-title
+    >
+    <mat-card-subtitle class="ml-5">
+      <p ><b>Total:</b> {{ journey.price | currency }}</p>
+    </mat-card-subtitle>
   </mat-card-header>
-  <mat-card-content>
-    <div class="horizontal-scroll-container">
+  <mat-card-content class="">
+    <div class="horizontal-scroll-container d-flex">
       @for (flight of journey.flights; track $index) {
       <div class="flight-info">
         <mat-icon class="icon">flight_takeoff</mat-icon>
-        <div>
-          <p>Vuelo {{ flight.transport.flightCarrier }} - {{ flight.transport.flightNumber }}</p>
-          <p>Origen: {{ flight.origin }}</p>
-          <p>Destino: {{ flight.destination }}</p>
-          <p>Precio: {{ flight.price | currency }}</p>
+        <p>
+          <b>
+            Vuelo {{ flight.transport.flightCarrier }} -
+            {{ flight.transport.flightNumber }}
+          </b>
+        </p>
+        <div class="row justify-content-start align-items-start text-start">
+          <h5>
+            Origen: {{ flight.origin }} - {{ airports[flight.origin].location }}
+          </h5>
+
+          <p class="">
+            Dirección:
+            {{
+              getAddress(
+                airports[flight.origin].street,
+                airports[flight.origin].street_number
+              )
+            }}
+          </p>
+          <p class="">
+            Teléfono: {{ getPhone(airports[flight.origin].phone) }}
+          </p>
+          <p class="">
+            Código Postal:
+            {{ getPostalCode(airports[flight.origin].postal_code) }}
+          </p>
+
+          <h5>
+            Destino: {{ flight.destination }} -
+            {{ airports[flight.destination].location }}
+          </h5>
+
+          <p class="">
+            Dirección:
+            {{
+              getAddress(
+                airports[flight.destination].street,
+                airports[flight.destination].street_number
+              )
+            }}
+          </p>
+
+          <p class="">
+            Teléfono: {{ getPhone(airports[flight.destination].phone) }}
+          </p>
+
+          <p class="">
+            Código Postal:
+            {{ getPostalCode(airports[flight.destination].postal_code) }}
+          </p>
+
+          <p><b>Precio:</b> {{ flight.price | currency }}</p>
         </div>
       </div>
-    }
+      }
     </div>
   </mat-card-content>
 </mat-card>
-

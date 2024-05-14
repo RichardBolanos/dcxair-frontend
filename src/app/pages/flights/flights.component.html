@@ -15,7 +15,7 @@
 
 <div class="container mt-5 mb-3">
   <div class="row justify-content-center d-flex align-items-center">
-    <div class="card col-lg-8 col-md-12 col-sm-12">
+    <div class="card col-lg-12 col-md-12 col-sm-12">
       <div class="card-body">
         <h5 class="card-title">Encuentra tu destino</h5>
         <form [formGroup]="flightForm" (ngSubmit)="onSubmit()">
@@ -110,12 +110,10 @@
                   }
                 </button>
               </div>
-              <!-- @for (flight of journey.data?.flights; track $index) { -->
-              @if (journey.data) {
-              <app-flight-card></app-flight-card>
-              }
-              <!-- } -->
             </div>
+            @if (journey.data) {
+            <app-flight-card></app-flight-card>
+            }
           </div>
         </form>
       </div>
