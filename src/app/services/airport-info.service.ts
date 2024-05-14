@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, forkJoin } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { Airport } from '../models/dto/airportInfo.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +11,7 @@ export class AirportInfoService {
 
   constructor(private http: HttpClient) {}
 
-  getAirportInfo(iataCodes:string[]): Observable<any> {
+  getAirportInfo(iataCodes:string[]): Observable<Airport[]> {
     const requests: Observable<any>[] = [];
     iataCodes.forEach((code) => {
       const url = `https://airport-info.p.rapidapi.com/airport?iata=${code}`;

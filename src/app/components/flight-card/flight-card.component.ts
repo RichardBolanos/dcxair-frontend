@@ -1,9 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { Journey } from '../../models/dto/dcxairResponses.interface';
+import {
+  DcxAirResponse,
+  Journey,
+} from '../../models/dto/dcxairResponses.interface';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
+import { StoreService } from '../../services/store.service';
+import { Airport } from '../../models/dto/airportInfo.interface';
+import { State } from '../../app-store';
 @Component({
   selector: 'app-flight-card',
   standalone: true,
@@ -12,5 +18,17 @@ import { CommonModule } from '@angular/common';
   styleUrl: './flight-card.component.scss',
 })
 export class FlightCardComponent {
-  @Input() journey!: Journey;
+  journey!: Journey;
+  airports!: Airport[];
+  constructor(private storeService: StoreService) {
+    this.storeService.getState().subscribe((state: State) => {
+      if (state?.dcxAirResponse?.data) {
+        this.journey = state.dcxAirResponse.data;
+      }
+      if (state?.airports) {
+        this.airports = state.airports;
+        console.log(this.airports);
+      }
+    });
+  }
 }

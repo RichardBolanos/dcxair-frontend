@@ -17,17 +17,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { AirportInfoService } from '../../services/airport-info.service';
 import { Airport } from '../../models/dto/airportInfo.interface';
 import { DcxairService } from '../../services/dcxair.service';
-import {
-  DcxAirResponse,
-  Flight,
-} from '../../models/dto/dcxairResponses.interface';
+import { DcxAirResponse } from '../../models/dto/dcxairResponses.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, startWith, map } from 'rxjs';
 import { DcxairFlightsRequest } from '../../models/dto/dcxairRequest.interface';
 import { FlightCardComponent } from '../../components/flight-card/flight-card.component';
 import { Currency, currencies } from '../../constants/currences.constant';
 import { StoreService } from '../../services/store.service';
-import { Store } from '@ngrx/store';
 import { State } from '../../app-store';
 
 @Component({
@@ -76,10 +72,12 @@ export class FlightsComponent implements OnInit {
       oneWay: ['', Validators.required],
     });
 
-    this.storeService.setState({ flights: {} });
+    this.storeService.setState({});
 
-    this.storeService.getState().subscribe((state: DcxAirResponse) => {
-      this.journey = state;
+    this.storeService.getState().subscribe((state: State) => {
+      if (state?.dcxAirResponse) {
+        this.journey = state?.dcxAirResponse;
+      }
     });
   }
 
@@ -160,6 +158,7 @@ export class FlightsComponent implements OnInit {
     this.airportService.getAirportInfo(airportIds).subscribe({
       next: (res: Airport[]) => {
         this.airportsInfo = res;
+        this.storeService.setAirports(this.airportsInfo);
       },
       error: (err) => {
         console.error(err);
@@ -179,7 +178,7 @@ export class FlightsComponent implements OnInit {
       };
       this.dcxairService.getFlights(request).subscribe({
         next: (data: DcxAirResponse) => {
-          this.storeService.setState(data);
+          this.storeService.setDcxairResponse(data);
         },
         error: (err) => {
           this.openSnackBar('' + err?.error?.message, 'Ok');

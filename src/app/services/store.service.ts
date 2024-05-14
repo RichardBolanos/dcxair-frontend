@@ -1,25 +1,38 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DcxAirResponse } from '../models/dto/dcxairResponses.interface';
+import { State } from '../app-store';
+import { Airport } from '../models/dto/airportInfo.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
-  private initialState = {
-    // Define tu estado inicial aquí
+  private initialState: State = {
+    dcxAirResponse: {},
+    airports: [],
   };
 
-  private stateSubject:BehaviorSubject<DcxAirResponse> = new BehaviorSubject<DcxAirResponse>(this.initialState);
-  state$: Observable<any> = this.stateSubject.asObservable();
+  private stateSubject: BehaviorSubject<State> = new BehaviorSubject<State>(
+    this.initialState
+  );
+  state$: Observable<State> = this.stateSubject.asObservable();
 
   constructor() {}
-  getState(): BehaviorSubject<DcxAirResponse> {
+  getState(): BehaviorSubject<State> {
     return this.stateSubject;
   }
+  
 
-  // Método para actualizar el estado
-  setState(newState: any): void {
+  setState(newState: State): void {
     this.stateSubject.next(newState);
+  }
+
+  setDcxairResponse(dcxAirResponse: DcxAirResponse) {
+    this.stateSubject.next({ ...this.stateSubject.value, dcxAirResponse });
+  }
+
+  setAirports(airports: Airport[]) {
+    this.stateSubject.next({ ...this.stateSubject.value, airports });
   }
 }
