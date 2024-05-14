@@ -27,3 +27,13 @@ Additional information is consulted for:
 1. the locations of the origin and destination airports, this allows the user to search for a city by its name and not its code
 2. By having the route data, additional information about the airport is displayed
 3. The value of the currencies is calculated in real time with the market value and you can select the most well-known currencies around the world
+
+## Images
+![ScreenShot 1](https://github.com/RichardBolanos/dcxair-frontend/blob/main/screenshots/Screenshot1.png?raw=true)
+![ScreenShot 2](https://github.com/RichardBolanos/dcxair-frontend/blob/main/screenshots/Screenshot2.png?raw=true)
+
+![ScreenShot 3](https://github.com/RichardBolanos/dcxair-frontend/blob/main/screenshots/Screenshot3.png?raw=true)
+
+![ScreenShot 4](https://github.com/RichardBolanos/dcxair-frontend/blob/main/screenshots/Screenshot4.png?raw=true)
+
+![ScreenShot 5](https://github.com/RichardBolanos/dcxair-frontend/blob/main/screenshots/Screenshot5.png?raw=true)
