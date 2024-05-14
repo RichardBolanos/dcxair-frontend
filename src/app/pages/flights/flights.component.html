@@ -13,7 +13,7 @@
   </div>
 </div>
 
-<div class="container mt-5">
+<div class="container mt-5 mb-3">
   <div class="row justify-content-center d-flex align-items-center">
     <div class="card col-lg-8 col-md-12 col-sm-12">
       <div class="card-body">
@@ -75,14 +75,24 @@
             </div>
             <div class="col-6">
               <mat-form-field class="w-100">
-                <mat-label>Selecciona la moneda de pago</mat-label>
-                <mat-select [formControl]="getFormControl('currency')">
-                  @for (option of mainCurrencies; track option) {
-                  <mat-option [value]="option">
-                    {{ option.code }}
+                <mat-label>Moneda</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  [formControl]="getFormControl('currency')"
+                  [matAutocomplete]="autoCompleteCurrency"
+                />
+                <mat-autocomplete
+                  #autoCompleteCurrency="matAutocomplete"
+                  [displayWith]="displayFnCurrency"
+                >
+                  @for (currency of filteredCurrencyOptions | async; track
+                  currency.code) {
+                  <mat-option [value]="currency">
+                    {{ currency.name }}
                   </mat-option>
                   }
-                </mat-select>
+                </mat-autocomplete>
               </mat-form-field>
             </div>
             <div

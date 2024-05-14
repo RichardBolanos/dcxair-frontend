@@ -22,6 +22,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, startWith, map } from 'rxjs';
 import { DcxairFlightsRequest } from '../../models/dto/dcxairRequest.interface';
 import { FlightCardComponent } from '../../components/flight-card/flight-card.component';
+import { Currency, currencies } from '../../constants/currences.constant';
 
 @Component({
   selector: 'app-flights',
@@ -37,20 +38,12 @@ import { FlightCardComponent } from '../../components/flight-card/flight-card.co
     MatSelectModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    FlightCardComponent
+    FlightCardComponent,
   ],
   templateUrl: './flights.component.html',
   styleUrl: './flights.component.scss',
 })
 export class FlightsComponent implements OnInit {
-  mainCurrencies: { code: string; name: string }[] = [
-    { code: 'USD', name: 'Dólar estadounidense' },
-    { code: 'EUR', name: 'Euro' },
-    { code: 'GBP', name: 'Libra esterlina' },
-    { code: 'JPY', name: 'Yen japonés' },
-    { code: 'CAD', name: 'Dólar canadiense' },
-    // Añade más monedas según sea necesario
-  ];
   selectedOrigin!: Airport;
   selectedDestination!: Airport;
   selectedBadge: string = '';
@@ -58,8 +51,10 @@ export class FlightsComponent implements OnInit {
   flightForm: FormGroup;
   filteredOriginOptions!: Observable<Airport[]>;
   filteredDestinationOptions!: Observable<Airport[]>;
-  journey:DcxAirResponse = {};
+  filteredCurrencyOptions!: Observable<Currency[]>;
+  journey: DcxAirResponse = {};
   loadingQuery: boolean = true;
+  mainCurrencies = currencies;
 
   constructor(
     private fb: FormBuilder,
@@ -77,38 +72,61 @@ export class FlightsComponent implements OnInit {
 
   ngOnInit() {
     this.initData();
+    this.filteredOriginOptions = this.initFiltersAirport('origin');
+    this.filteredDestinationOptions = this.initFiltersAirport('destination');
+    this.filteredCurrencyOptions = this.initFiltersCurrency('currency');
+  }
 
-    this.filteredOriginOptions = this.getFormControl(
-      'origin'
-    ).valueChanges.pipe(
+  private initFiltersCurrency(formControlName: string): Observable<Currency[]> {
+    return this.getFormControl(formControlName).valueChanges.pipe(
       startWith(''),
-      map((value) => this._filter(value || '', false))
+      map((value) => this._filterCurrency(value || '', true))
     );
-    this.filteredDestinationOptions = this.getFormControl(
-      'destination'
-    ).valueChanges.pipe(
+  }
+  private initFiltersAirport(formControlName: string): Observable<Airport[]> {
+    return this.getFormControl(formControlName).valueChanges.pipe(
       startWith(''),
       map((value) => this._filter(value || '', true))
     );
   }
 
+  // Filters airports based on user input
   private _filter(value: any, isDestination: boolean): Airport[] {
     let filterValue: any;
-
     try {
-      filterValue = value.toLowerCase();
+      filterValue = (value as string).normalize().toLowerCase();
     } catch (_) {
-      filterValue = value.location.toLowerCase();
+      filterValue = (value.name as string).normalize().toLowerCase();
     }
     return this.airportsInfo?.filter((option) => {
-      if (isDestination) {
-      }
       return filterValue == ''
         ? false
-        : option.location.toLowerCase().includes(filterValue);
+        : (option.location as string)
+            .normalize()
+            .toLowerCase()
+            .includes(filterValue);
     });
   }
 
+  // Filters currencies based on user input
+  private _filterCurrency(value: any, isDestination: boolean): Currency[] {
+    let filterValue: any;
+    try {
+      filterValue = (value as string).normalize().toLowerCase();
+    } catch (_) {
+      filterValue = (value.name as string).normalize().toLowerCase();
+    }
+    return this.mainCurrencies?.filter((option) => {
+      return filterValue == ''
+        ? false
+        : (option.name as string)
+            .normalize()
+            .toLowerCase()
+            .includes(filterValue);
+    });
+  }
+
+  // Initializes component data
   private initData(): void {
     this.dcxairService.getCountries().subscribe({
       next: (res: any) => {
@@ -124,6 +142,7 @@ export class FlightsComponent implements OnInit {
     });
   }
 
+  // Retrieves airport information based on IDs
   private getAirportInfo(airportIds: string[]): void {
     this.airportService.getAirportInfo(airportIds).subscribe({
       next: (res: Airport[]) => {
@@ -135,9 +154,9 @@ export class FlightsComponent implements OnInit {
     });
   }
 
+  // Submits flight form
   onSubmit() {
     if (this.flightForm.valid) {
-      //this.loadingQuery = true;
       const formValues = this.flightForm.value;
       const request: DcxairFlightsRequest = {
         origin: formValues.origin.iata,
@@ -149,30 +168,39 @@ export class FlightsComponent implements OnInit {
         next: (data: DcxAirResponse) => {
           this.journey = data;
         },
-        error: (err: DcxAirResponse) => {
-          this.openSnackBar('Ha ocurrido un error', 'Ok');
+        error: (err) => {
+          this.openSnackBar(""+err?.error?.message, 'Ok');
         },
         complete: () => {
-          //this.loadingQuery = false;
+          // Optionally, perform actions after completing the request
         },
       });
     } else {
-      this.openSnackBar('Por favor llene los campos obligatorios', 'Ok');
+      this.openSnackBar('Please fill in required fields', 'Ok');
     }
   }
 
+  // Display function for airport autocomplete
   displayFn(airport: any): string {
     return airport ? airport.location : '';
   }
 
+  // Display function for currency autocomplete
+  displayFnCurrency(currency: Currency): string {
+    return currency ? currency.name : '';
+  }
+
+  // Retrieves form control by name
   getFormControl(formControlName: string): FormControl {
     return this.flightForm.get(formControlName) as FormControl;
   }
+
+  // Opens a snack bar with a message
   openSnackBar(message: string, actionMessage: string) {
     this._snackBar.open(message, actionMessage, {
       horizontalPosition: 'end',
       verticalPosition: 'bottom',
-      duration: 500,
+      duration: 2000,
     });
   }
 }
