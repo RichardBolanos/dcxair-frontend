@@ -39,9 +39,6 @@ export class FlightCardComponent {
           },
           {}
         );
-
-        // Log the transformed airports object for debugging purposes
-        console.log(this.airports);
       }
     });
   }
