@@ -20,13 +20,24 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Description of the project
+
 The DCXAir project was made with love and its main features are:
+
 It allows you to consult flights by selecting an origin, a destination, a one-way flight or round-trip flights, and the results are the most optimal since the Backend uses the Dijkstra algorithm to calculate the lowest cost routes.
+
 Implemented unit tests with Jasmine and Karma.
+
 Additional information is consulted for:
+
 1. the locations of the origin and destination airports, this allows the user to search for a city by its name and not its code
+
 2. By having the route data, additional information about the airport is displayed
+
 3. The value of the currencies is calculated in real time with the market value and you can select the most well-known currencies around the world
+
+Other interesting points about the project are:
+1. RXJS was used to manage the state of the application using the RXJS store
+2. RXJS was used to handle asynchrony and requests, through observables and other elements
 
 ## Images
 ![ScreenShot 1](https://github.com/RichardBolanos/dcxair-frontend/blob/main/screenshots/Screenshot1.png?raw=true)
