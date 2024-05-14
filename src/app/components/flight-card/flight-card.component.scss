@@ -1,0 +1,24 @@
+.flight-card {
+  width: 100%;
+  overflow: hidden;
+}
+
+.horizontal-scroll-container {
+  display: flex;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.5) transparent; /* Establece el color de la barra de desplazamiento */
+  white-space: nowrap; /* Evita que los elementos se envuelvan a la siguiente línea */
+  padding-bottom: 16px; /* Añade espacio para la barra de desplazamiento en caso de que aparezca */
+}
+
+.flight-info {
+  display: inline-block;
+  width: 300px; /* Anchura de cada tarjeta de vuelo */
+  margin-right: 16px; /* Espacio entre las tarjetas de vuelo */
+}
+
+.icon {
+  margin-right: 10px;
+}

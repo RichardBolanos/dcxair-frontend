@@ -1,0 +1,114 @@
+<div class="container-fluid p-0">
+  <div class="row">
+    <div class="col-12">
+      <div id="banner" class="top-div bg-light p-5 mx-4">
+        <h1 class="text-dark">
+          Explora el Mundo: Encuentra tus Próximos Destinos
+        </h1>
+        <h6 class="text-dark">
+          Descubre Ofertas Espectaculares en Vuelos para tu Próxima Aventura
+        </h6>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-5">
+  <div class="row justify-content-center d-flex align-items-center">
+    <div class="card col-lg-8 col-md-12 col-sm-12">
+      <div class="card-body">
+        <h5 class="card-title">Encuentra tu destino</h5>
+        <form [formGroup]="flightForm" (ngSubmit)="onSubmit()">
+          <mat-button-toggle-group
+            name="fontStyle"
+            aria-label="Font Style"
+            [formControl]="getFormControl('oneWay')"
+          >
+            <mat-button-toggle [value]="true">Solo ida</mat-button-toggle>
+            <mat-button-toggle [value]="false">Ida y vuelta</mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <div class="row text-center mt-5">
+            <div class="col-6">
+              <mat-form-field class="w-100">
+                <mat-label>Origen</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  [formControl]="getFormControl('origin')"
+                  [matAutocomplete]="autoCompleteOrigin"
+                />
+                <mat-autocomplete
+                  #autoCompleteOrigin="matAutocomplete"
+                  [displayWith]="displayFn"
+                >
+                  @for (airport of filteredOriginOptions | async; track
+                  airport.id) {
+                  <mat-option [value]="airport">
+                    {{ airport.location }}
+                  </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col-6">
+              <mat-form-field class="w-100">
+                <mat-label>Destino</mat-label>
+                <input
+                  type="text"
+                  matInput
+                  [formControl]="getFormControl('destination')"
+                  [matAutocomplete]="autoCompleteDestination"
+                />
+                <mat-autocomplete
+                  #autoCompleteDestination="matAutocomplete"
+                  [displayWith]="displayFn"
+                >
+                  @for (airport of filteredDestinationOptions | async; track
+                  airport.id) {
+                  <mat-option [value]="airport">
+                    {{ airport.location }}
+                  </mat-option>
+                  }
+                </mat-autocomplete>
+              </mat-form-field>
+            </div>
+            <div class="col-6">
+              <mat-form-field class="w-100">
+                <mat-label>Selecciona la moneda de pago</mat-label>
+                <mat-select [formControl]="getFormControl('currency')">
+                  @for (option of mainCurrencies; track option) {
+                  <mat-option [value]="option">
+                    {{ option.code }}
+                  </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div
+              class="row justify-content-center d-flex align-items-center mt-3"
+            >
+              <div class="col-2">
+                <button
+                  type="submit"
+                  class="btn btn-primary w-auto"
+                  data-mdb-ripple-init
+                  [disabled]="!loadingQuery"
+                >
+                  @if (loadingQuery) { Buscar }@else {
+                  <mat-spinner [diameter]="20"></mat-spinner>
+                  }
+                </button>
+              </div>
+              <!-- @for (flight of journey.data?.flights; track $index) { -->
+              @if (journey.data) {
+              <app-flight-card [journey]="journey.data!"></app-flight-card>
+              }
+              <!-- } -->
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

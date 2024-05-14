@@ -1,0 +1,23 @@
+<br class="mt-2">
+<mat-card class="flight-card mt-2">
+  <mat-card-header>
+    <mat-card-title>{{ journey.origin }} - {{ journey.destination }}</mat-card-title>
+    <mat-card-subtitle>Total: ${{ journey.price }}</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="horizontal-scroll-container">
+      @for (flight of journey.flights; track $index) {
+      <div class="flight-info">
+        <mat-icon class="icon">flight_takeoff</mat-icon>
+        <div>
+          <p>Vuelo: {{ flight.transport.flightCarrier }} - {{ flight.transport.flightNumber }}</p>
+          <p>Origen: {{ flight.origin }}</p>
+          <p>Destino: {{ flight.destination }}</p>
+          <p>Precio: ${{ flight.price }}</p>
+        </div>
+      </div>
+    }
+    </div>
+  </mat-card-content>
+</mat-card>
+
