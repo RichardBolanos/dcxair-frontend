@@ -17,12 +17,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { AirportInfoService } from '../../services/airport-info.service';
 import { Airport } from '../../models/dto/airportInfo.interface';
 import { DcxairService } from '../../services/dcxair.service';
-import { DcxAirResponse } from '../../models/dto/dcxairResponses.interface';
+import {
+  DcxAirResponse,
+  Flight,
+} from '../../models/dto/dcxairResponses.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, startWith, map } from 'rxjs';
 import { DcxairFlightsRequest } from '../../models/dto/dcxairRequest.interface';
 import { FlightCardComponent } from '../../components/flight-card/flight-card.component';
 import { Currency, currencies } from '../../constants/currences.constant';
+import { StoreService } from '../../services/store.service';
+import { Store } from '@ngrx/store';
+import { State } from '../../app-store';
 
 @Component({
   selector: 'app-flights',
@@ -55,18 +61,25 @@ export class FlightsComponent implements OnInit {
   journey: DcxAirResponse = {};
   loadingQuery: boolean = true;
   mainCurrencies = currencies;
-
+  state!: State;
   constructor(
     private fb: FormBuilder,
     private airportService: AirportInfoService,
     private dcxairService: DcxairService,
-    private _snackBar: MatSnackBar
+    private _snackBar: MatSnackBar,
+    private storeService: StoreService
   ) {
     this.flightForm = this.fb.group({
       origin: ['', Validators.required],
       destination: ['', Validators.required],
       currency: ['', Validators.required],
       oneWay: ['', Validators.required],
+    });
+
+    this.storeService.setState({ flights: {} });
+
+    this.storeService.getState().subscribe((state: DcxAirResponse) => {
+      this.journey = state;
     });
   }
 
@@ -166,10 +179,10 @@ export class FlightsComponent implements OnInit {
       };
       this.dcxairService.getFlights(request).subscribe({
         next: (data: DcxAirResponse) => {
-          this.journey = data;
+          this.storeService.setState(data);
         },
         error: (err) => {
-          this.openSnackBar(""+err?.error?.message, 'Ok');
+          this.openSnackBar('' + err?.error?.message, 'Ok');
         },
         complete: () => {
           // Optionally, perform actions after completing the request
