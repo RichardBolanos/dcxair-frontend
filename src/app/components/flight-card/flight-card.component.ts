@@ -52,13 +52,9 @@ export class FlightCardComponent {
       : street + (streetNumber != '' ? ' - ' + streetNumber : '');
   }
 
-  // Function to get the postal code string, returns 'N/A' if postalCode is an empty string
-  getPostalCode(postalCode: string): string {
+  // Function to get the string, returns 'N/A' if string is an empty string
+  getString(postalCode: string): string {
     return postalCode == '' ? 'N/A' : postalCode;
   }
 
-  // Function to get the phone number string, returns 'N/A' if phone number is an empty string
-  getPhone(phone: string): string {
-    return phone == '' ? 'N/A' : phone;
-  }
 }
